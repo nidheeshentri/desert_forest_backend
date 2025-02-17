@@ -15,6 +15,15 @@ from datetime import timedelta
 import environ
 env = environ.Env()
 
+ENV_SECRET_KEY="h4-j@2(!+z!h-+u)72s2)rnyn1&^j#6@%^+6g^iyz9mb9)%k=g"
+ENV_DEBUG=True
+ENV_TOKEN="EAAIw8nN3BeYBOyoX7wmfKR4ZApZBa6H5BPy1OjwcKJZA2AINXZC0ZBCkolZCZCgreOJlYRQ5F7FsOcTlzGo96KpZAS1XU07idyLwzYTLzRTpn6D452UjfczMOVIpeIbzNQUibtrlLYq4ywDaEp64ARZCZBjvQc8xYtZBdN46iXSZBrSYf8prGE7S5vOBKs5vOuavOxOIuk9K95ZCwPSuqqjWF1pYx5wslzeVQ"
+ENV_PHONE_NUMBER_ID="547994715063675"
+ENV_WHATSAPP_BUSINESS_ID="574878239035335"
+ENV_BUSINESS_ID="1379700619582342"
+ENV_PERMANENT_TOKEN="EAAIw8nN3BeYBO9SJ6Hjm8TSEOZCBW94yuZApTCBCxvGDzzWHvb4f3ZCRJOA0akUByEfPvYs1WAZAXZCeAuoHy4KjlNFAI4gGYHFpaiidPEBpQWR7a2Lpr3GSV3nyJQPFWFr8Y97XZB3AiiyvpWcZAMlqouybUaZCZCNeKWTlIsxntrEFQ24G7crhRncQE6HHzLXfnBgZDZD"
+ENV_AUTOREPLYTEXT="Hi, thank you for cotacting us, our team will contact you soon"
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,8 +32,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
-DEBUG = env('DEBUG') == "True"
+SECRET_KEY = ENV_SECRET_KEY
+DEBUG = ENV_DEBUG
 
 # SECURITY WARNING: don't run with debug turned on in production!
 

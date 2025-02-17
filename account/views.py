@@ -15,11 +15,11 @@ from .models import AccessToken
 
 env = environ.Env()
 
-phone_number_id = env("PHONE_NUMBER_ID")
-business_id = env("BUSINESS_ID")
-whatsapp_business_id = env("WHATSAPP_BUSINESS_ID")
-access_token = env("TOKEN")
-permanent_token = env("PERMANENT_TOKEN")
+phone_number_id = "547994715063675"
+business_id = "1379700619582342"
+whatsapp_business_id = "574878239035335"
+access_token = "EAAIw8nN3BeYBOyoX7wmfKR4ZApZBa6H5BPy1OjwcKJZA2AINXZC0ZBCkolZCZCgreOJlYRQ5F7FsOcTlzGo96KpZAS1XU07idyLwzYTLzRTpn6D452UjfczMOVIpeIbzNQUibtrlLYq4ywDaEp64ARZCZBjvQc8xYtZBdN46iXSZBrSYf8prGE7S5vOBKs5vOuavOxOIuk9K95ZCwPSuqqjWF1pYx5wslzeVQ"
+permanent_token = "EAAIw8nN3BeYBO9SJ6Hjm8TSEOZCBW94yuZApTCBCxvGDzzWHvb4f3ZCRJOA0akUByEfPvYs1WAZAXZCeAuoHy4KjlNFAI4gGYHFpaiidPEBpQWR7a2Lpr3GSV3nyJQPFWFr8Y97XZB3AiiyvpWcZAMlqouybUaZCZCNeKWTlIsxntrEFQ24G7crhRncQE6HHzLXfnBgZDZD"
 
 # Create your views here.
 
