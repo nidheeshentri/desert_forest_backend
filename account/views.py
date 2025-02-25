@@ -236,7 +236,7 @@ class CreateCampaign(APIView):
         # new_campaign.status = "Completed"
         # new_campaign.save()
 
-        if response.status_code == 200:
+        if msg_response.status_code == 200:
             return Response({"status: Success"})
         else:
             return Response({'error': 'Authentication error'}, status=401)
