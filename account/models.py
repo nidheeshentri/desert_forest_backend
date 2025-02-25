@@ -182,3 +182,7 @@ class AccessToken(models.Model):
 
     def __str__(self):
         return self.token
+
+class CredentialsManagement(models.Model):
+    gupshup_appId = models.CharField(max_length = 200)
+    gupshup_token = models.CharField(max_length = 200)

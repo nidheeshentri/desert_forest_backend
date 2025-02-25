@@ -28,5 +28,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path("", include("account.urls", namespace="account")),
-    path("webhook", include("webhooks.urls", namespace="webhook"))
+    path("webhook", include("webhooks.urls", namespace="webhook")),
+    path("chat/", include("groupchat.urls")),
 ]

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, UserRole, OTP, Template, Campaign, Message, Contact, ContactGroup, AccessToken
+from .models import CustomUser, UserRole, OTP, Template, Campaign, Message, Contact, ContactGroup, AccessToken, CredentialsManagement
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
@@ -46,4 +46,5 @@ admin.site.register(Message)
 admin.site.register(Contact)
 admin.site.register(ContactGroup)
 admin.site.register(AccessToken)
+admin.site.register(CredentialsManagement)
 admin.site.unregister(Group)

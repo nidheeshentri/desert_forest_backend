@@ -7,7 +7,6 @@ import environ, requests
 
 env = environ.Env()
 phone_number_id = "547994715063675"
-access_token = "EAAIw8nN3BeYBOyoX7wmfKR4ZApZBa6H5BPy1OjwcKJZA2AINXZC0ZBCkolZCZCgreOJlYRQ5F7FsOcTlzGo96KpZAS1XU07idyLwzYTLzRTpn6D452UjfczMOVIpeIbzNQUibtrlLYq4ywDaEp64ARZCZBjvQc8xYtZBdN46iXSZBrSYf8prGE7S5vOBKs5vOuavOxOIuk9K95ZCwPSuqqjWF1pYx5wslzeVQ"
 auto_reply_text = "Hi, thank you for cotacting us, our team will contact you soon"
 
 # Create your views here.

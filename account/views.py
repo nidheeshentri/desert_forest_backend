@@ -7,19 +7,33 @@ from .serializers import UserSerializer, TemplateSerializer, CampaignSerializer,
 from django.core.mail import send_mail
 import random, csv, io, requests, time, json
 from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST
-from .models import CustomUser, OTP, UserRole, Template, Campaign, Message, Contact, ContactGroup
+from .models import CustomUser, OTP, UserRole, Template, Campaign, Message, Contact, ContactGroup, CredentialsManagement
 import environ
 from rest_framework import serializers
 from django.db.models import Count
 from .models import AccessToken
+import urllib.parse
 
 env = environ.Env()
 
 phone_number_id = "547994715063675"
 business_id = "1379700619582342"
 whatsapp_business_id = "574878239035335"
-access_token = "EAAIw8nN3BeYBOyoX7wmfKR4ZApZBa6H5BPy1OjwcKJZA2AINXZC0ZBCkolZCZCgreOJlYRQ5F7FsOcTlzGo96KpZAS1XU07idyLwzYTLzRTpn6D452UjfczMOVIpeIbzNQUibtrlLYq4ywDaEp64ARZCZBjvQc8xYtZBdN46iXSZBrSYf8prGE7S5vOBKs5vOuavOxOIuk9K95ZCwPSuqqjWF1pYx5wslzeVQ"
 permanent_token = "EAAIw8nN3BeYBO9SJ6Hjm8TSEOZCBW94yuZApTCBCxvGDzzWHvb4f3ZCRJOA0akUByEfPvYs1WAZAXZCeAuoHy4KjlNFAI4gGYHFpaiidPEBpQWR7a2Lpr3GSV3nyJQPFWFr8Y97XZB3AiiyvpWcZAMlqouybUaZCZCNeKWTlIsxntrEFQ24G7crhRncQE6HHzLXfnBgZDZD"
+
+# try:
+#     gupshup_appId = CredentialsManagement.objects.all().last().gupshup_appId
+#     gupshup_token = CredentialsManagement.objects.all().last().gupshup_token
+# except:
+#     gupshup_appId = ""
+#     gupshup_token = ""
+
+gupshup_appId = CredentialsManagement.objects.all().last().gupshup_appId
+gupshup_token = CredentialsManagement.objects.all().last().gupshup_token
+
+
+print(gupshup_appId)
+print(gupshup_token)
 
 # Create your views here.
 
@@ -137,66 +151,95 @@ class ContactGroupDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class CreateCampaign(APIView):
     def post(self, request):
-        file = request.FILES["file"]
-        print(request.data)
+        # file = request.FILES["file"]
+        # print(request.data)
 
-        decoded_file = file.read().decode('utf-8')
-        csv_reader = csv.reader(io.StringIO(decoded_file))
-        contact_group = ContactGroup.objects.create(group_name=request.data.get("campaign_name"))
+        # decoded_file = file.read().decode('utf-8')
+        # csv_reader = csv.reader(io.StringIO(decoded_file))
+        # contact_group = ContactGroup.objects.create(group_name=request.data.get("campaign_name"))
 
-        campaign_name = request.data.get("campaign_name")
-        template_name = request.data.get("template_name")
-        template = Template.objects.get(id = request.data.get("template"))
+        # campaign_name = request.data.get("campaign_name")
+        # template_name = request.data.get("template_name")
+        # template = Template.objects.get(id = request.data.get("template"))
 
-        new_campaign = Campaign.objects.create(name=campaign_name, template=template, to_group=contact_group, status="Running")
+        # new_campaign = Campaign.objects.create(name=campaign_name, template=template, to_group=contact_group, status="Running")
 
-        url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
-        token = AccessToken.objects.all().last()
-        headers = {
-            "Authorization": f"Bearer {token.token}",
-            "Content-Type": "application/json"
+        # url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
+        # token = AccessToken.objects.all().last()
+        # headers = {
+        #     "Authorization": f"Bearer {token.token}",
+        #     "Content-Type": "application/json"
+        # }
+        # new_campaign.save()
+
+
+
+        # for contact in csv_reader:
+        #     if contact[0] != "name":
+        #         print(contact[1])
+        #         name = contact[0]
+        #         phone = contact[1]
+        #         new_contact = Contact.objects.create(name = name, phone = phone, contact_group = contact_group
+        #         )
+
+        #         payload = {
+        #             "messaging_product": "whatsapp",
+        #             "to": phone,
+        #             "type": "template",
+        #             "template": {
+        #                 "name": template.name,  # Your pre-approved template name
+        #                 "language": {"code": template.language} 
+        #             }
+        #         }
+                
+        #         msg_response = requests.post(url, headers=headers, json=payload)
+        #         payload = msg_response.json()
+        #         # {'messaging_product': 'whatsapp', 'contacts': [{'input': '917305055356', 'wa_id': '917305055356'}], 'messages': [{'id': 'wamid.HBgMOTE3MzA1MDU1MzU2FQIAERgSRDFERkFGREZCMUM1MzYyRjQyAA==', 'message_status': 'accepted'}]}
+
+        #         try:
+        #             print(payload.get("messages"))
+        #             print(payload.get("messages")[0].get("id"))
+        #             Message.objects.create(
+        #                 campaign = new_campaign,
+        #                 recipient_phone = phone,
+        #                 recipient_name = name,
+        #                 status = "PENDING",
+        #                 response_id = payload.get("messages")[0].get("id")
+        #             )
+        #             print("Created")
+        #         except:
+        #             pass
+        url = f"https://partner.gupshup.io/partner/app/{gupshup_appId}/v3/message"
+        payload = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": "917305055356",
+            "type": "template",
+            "template": {
+                "name": "delivered_successfully_5834",
+                "language": {
+                "code": "en_US"
+                },
+                "components": []
+            }
         }
-        new_campaign.save()
-        for contact in csv_reader:
-            if contact[0] != "name":
-                print(contact[1])
-                name = contact[0]
-                phone = contact[1]
-                new_contact = Contact.objects.create(name = name, phone = phone, contact_group = contact_group
-                )
 
-                payload = {
-                    "messaging_product": "whatsapp",
-                    "to": phone,
-                    "type": "template",
-                    "template": {
-                        "name": template.name,  # Your pre-approved template name
-                        "language": {"code": template.language} 
-                    }
-                }
-                
-                msg_response = requests.post(url, headers=headers, json=payload)
-                payload = msg_response.json()
-                # {'messaging_product': 'whatsapp', 'contacts': [{'input': '917305055356', 'wa_id': '917305055356'}], 'messages': [{'id': 'wamid.HBgMOTE3MzA1MDU1MzU2FQIAERgSRDFERkFGREZCMUM1MzYyRjQyAA==', 'message_status': 'accepted'}]}
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/x-www-form-urlencoded",
+            "Token": gupshup_token
+        }
 
-                try:
-                    print(payload.get("messages"))
-                    print(payload.get("messages")[0].get("id"))
-                    Message.objects.create(
-                        campaign = new_campaign,
-                        recipient_phone = phone,
-                        recipient_name = name,
-                        status = "PENDING",
-                        response_id = payload.get("messages")[0].get("id")
-                    )
-                    print("Created")
-                except:
-                    pass
-                
+        msg_response = requests.post(url, headers=headers, json=payload)   
+        print(msg_response.json())
 
-        new_campaign.status = "Completed"
-        new_campaign.save()
-        return Response({"status: Success"})
+        # new_campaign.status = "Completed"
+        # new_campaign.save()
+
+        if response.status_code == 200:
+            return Response({"status: Success"})
+        else:
+            return Response({'error': 'Authentication error'}, status=401)
 
 class CreateTemplate(APIView):
     def post(self, request):
@@ -211,42 +254,69 @@ class CreateTemplate(APIView):
 
         print(data)
 
-        url = f"https://graph.facebook.com/v21.0/{whatsapp_business_id}/message_templates"
+        # url = f"https://graph.facebook.com/v21.0/{whatsapp_business_id}/message_templates"
 
-        # Define the template payload
-        template_name = data.get("templateName")
-        template_name=template_name.replace(" ", "_")
+        # # Define the template payload
+        # template_name = data.get("templateName")
+        # template_name=template_name.replace(" ", "_")
+        # payload = {
+        #     "name": template_name,
+        #     "language": "en_US",
+        #     "category": data.get("category"),
+        #     "components": [
+        #         {
+        #             "type": "HEADER",
+        #             "format": "TEXT",
+        #             "text": "Valentines day offer"
+        #         },
+        #         {
+        #             "type": "BODY",
+        #             "text": data.get("content")
+        #         },
+        #         {
+        #             "type": "FOOTER",
+        #             "text": data.get("footerContent")
+        #         }
+        #     ]
+        # }
+
+        # # Set the headers
+        # headers = {
+        #     "Authorization": f"Bearer {permanent_token}",
+        #     "Content-Type": "application/json"
+        # }
+
+        # # Send the POST request
+        # response = requests.post(url, headers=headers, data=json.dumps(payload))
+
+        url = f"https://partner.gupshup.io/partner/app/{gupshup_appId}/templates"
+
         payload = {
-            "name": template_name,
-            "language": "en_US",
-            "category": data.get("category"),
-            "components": [
-                {
-                    "type": "HEADER",
-                    "format": "TEXT",
-                    "text": "Valentines day offer"
-                },
-                {
-                    "type": "BODY",
-                    "text": data.get("content")
-                },
-                {
-                    "type": "FOOTER",
-                    "text": data.get("footerContent")
-                }
-            ]
+            "elementName": data["templateName"],
+            "languageCode": data["language"],
+            "category": data["category"],
+            "templateType": data["headerType"],
+            "vertical": "TEXT",
+            "content": data["content"],
+            "header": data["headerContent"],
+            "footer": data["footerContent"],
+            "example": data["content"],
+            "exampleHeader": data["headerContent"],
+            "message_send_ttl_seconds": "43200"
         }
-
-        # Set the headers
         headers = {
-            "Authorization": f"Bearer {permanent_token}",
-            "Content-Type": "application/json"
+            "content-type": "application/x-www-form-urlencoded",
+            "Token": gupshup_token,
         }
 
-        # Send the POST request
-        response = requests.post(url, headers=headers, data=json.dumps(payload))
+        encoded_payload = urllib.parse.urlencode(payload)
 
-        # Handle the response
+        response = requests.post(url, data=encoded_payload, headers=headers)
+
+        print("Response ================= ", response.text)
+
+        # response = requests.post(url, data=payload, headers=headers)
+
         if response.status_code == 200:
             print("Message sent successfully:", response.json())
             new_template = Template()
